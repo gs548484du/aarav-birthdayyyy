@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>🎉 Aarav Birthday 🎉</title>
+
+<style>
+body {
+  margin: 0;
+  background: black;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Screen */
+.screen {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+/* Typing text */
+#typing {
+  font-size: 40px;
+  margin-top: 20%;
+  border-right: 3px solid white;
+  display: inline-block;
+  padding-right: 5px;
+}
+
+/* Hide */
+.hidden { display: none; }
+
+/* Glow */
+.glow {
+  font-size: 50px;
+  animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+  from {text-shadow: 0 0 10px #fff;}
+  to {text-shadow: 0 0 40px #ff00ff;}
+}
+
+/* Photo */
+.photo {
+  width: 200px;
+  border-radius: 20px;
+  margin-top: 20px;
+  box-shadow: 0 0 20px white;
+}
+
+/* Gift */
+.gift {
+  width: 120px;
+  height: 120px;
+  background: red;
+  margin: 30px auto;
+  cursor: pointer;
+}
+
+/* Cake */
+.cake {
+  width: 200px;
+  height: 160px;
+  background: pink;
+  margin: 30px auto;
+  border-radius: 20px;
+  position: relative;
+  cursor: pointer;
+}
+
+.candle {
+  width: 10px;
+  height: 40px;
+  background: yellow;
+  position: absolute;
+  top: -40px;
+  left: 95px;
+}
+
+.flame {
+  width: 15px;
+  height: 15px;
+  background: orange;
+  border-radius: 50%;
+  position: absolute;
+  top: -15px;
+}
+
+/* Hearts */
+.heart {
+  position: absolute;
+  font-size: 20px;
+  animation: float 4s linear;
+}
+
+@keyframes float {
+  from {transform: translateY(0);}
+  to {transform: translateY(-700px);}
+}
+
+/* Canvas */
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Screen 1 -->
+<div id="screen1" class="screen">
+  <div id="typing"></div>
+</div>
+
+<!-- Screen 2 -->
+<div id="screen2" class="screen hidden">
+  <h1 class="glow">🎉 Happy Birthday Aarav 🎉</h1>
+
+  <img src="https://i.imgur.com/3ZQ3Z4D.png" class="photo">
+
+  <div class="gift" onclick="openGift()"></div>
+  <h3>Tap Gift 🎁</h3>
+
+  <div class="cake" onclick="cutCake()">
+    <div class="candle">
+      <div class="flame" id="flame"></div>
+    </div>
+  </div>
+  <h3>Tap Cake 🎂</h3>
+</div>
+
+<!-- Screen 3 -->
+<div id="screen3" class="screen hidden">
+  <h1 class="glow">🎊 Lots of Fun & Happiness 🎊</h1>
+</div>
+
+<canvas id="canvas"></canvas>
+
+<audio id="music">
+  <source src="https://www2.cs.uic.edu/~i101/SoundFiles/HappyBirthday.mid">
+</audio>
+
+<script>
+// Typing effect
+const text = "Dear Aarav...";
+let i = 0;
+
+function type() {
+  if (i < text.length) {
+    document.getElementById("typing").innerHTML += text.charAt(i);
+    i++;
+    setTimeout(type, 100);
+  } else {
+    setTimeout(showMain, 1500);
+  }
+}
+
+type();
+
+// Switch screen
+function showMain() {
+  document.getElementById("screen1").classList.add("hidden");
+  document.getElementById("screen2").classList.remove("hidden");
+}
+h
+// Gift
+function openGift() {
+  createHearts();
+}
+
+// Cake
+function cutCake() {
+  document.getElementById("flame").style.display = "none";
+  setTimeout(() => {
+    document.getElementById("screen2").classList.add("hidden");
+    document.getElementById("screen3").classList.remove("hidden");
+  }, 1500);
+}
+
+// Hearts
+function createHearts() {
+  for (let i = 0; i < 25; i++) {
+    let h = document.createElement("div");
+    h.className = "heart";
+    h.innerHTML = "💖";
+    h.style.left = Math.random() * window.innerWidth + "px";
+    h.style.top = window.innerHeight + "px";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 4000);
+  }
+}
+
+// Music start on click
+document.body.addEventListener("click", () => {
+  document.getElementById("music").play();
+}, { once: true });
+
+// Fireworks
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d"); 
+canvas.width = innerWidth;
+canvas.height = innerHeight;
+
+let particles = [];
+
+function firework(x, y) {
+  for (let i = 0; i < 60; i++) {
+    particles.push({
+      x, y,
+      dx: (Math.random()-0.5)*6,
+      dy: (Math.random()-0.5)*6,
+      life: 100
+    });
+  }
+}
+
+canvas.addEventListener("click", e => firework(e.clientX, e.clientY));
+
+function animate() {
+  ctx.fillStyle = "rgba(0,0,0,0.2)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  particles.forEach((p,i)=>{
+    ctx.fillStyle = "hsl("+Math.random()*360+",100%,50%)";
+    ctx.fillRect(p.x,p.y,3,3);
+    p.x+=p.dx;
+    p.y+=p.dy;
+    p.life--;
+    if(p.life<=0) particles.splice(i,1);
+  });
+
+  requestAnimationFrame(animate);
+}
+
+setInterval(()=>firework(Math.random()*canvas.width,Math.random()*canvas.height/2),700);
+animate();
+</script>
+
+</body>
+</html>
